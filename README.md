@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/hellhub-collective/sdk">
+  <a href="https://github.com/hellhub-collective/cli">
     <img src="https://raw.githubusercontent.com/hellhub-collective/cli/main/assets/logo.png" width="150px" alt="HellHub CLI Logo" />
   </a>
 </p>
@@ -62,4 +62,4 @@ export HELLHUB_API_URL="https://my-hellhub-api.com/api"
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](https://github.com/hellhub-collective/sdk/blob/main/LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/hellhub-collective/cli/blob/main/LICENSE) file for details.

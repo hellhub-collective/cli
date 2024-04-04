@@ -57,7 +57,7 @@ jobs:
         with:
           message-id: "bundle-size-comparison"
           message: |
-            Thank you for contributing to the HellHub SDK fellow Helldiver! We try to keep our bundle size as small as possible, here you can see the impact of your pull request to the main bundle.
+            Thank you for contributing to the HellHub CLI fellow Helldiver! We try to keep our bundle size as small as possible, here you can see the impact of your pull request to the main bundle.
 
             | 📦 Main                    | 🚀 PR                        | 📁 Generated Files           |
             |----------------------------|------------------------------|------------------------------|
