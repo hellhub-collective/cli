@@ -20,6 +20,6 @@ A clear and concise description of what the bug is.
 
 A clear and concise description of what you expected to happen.
 
-### Which version of the SDK are you using?
+### Which version of the CLI are you using?
 
 e.g. 1.0.0

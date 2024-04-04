@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/hellhub-collective/sdk">
+  <a href="https://github.com/hellhub-collective/cli">
     <img src="https://raw.githubusercontent.com/hellhub-collective/cli/main/assets/logo.png" width="150px" alt="HellHub CLI Logo" />
   </a>
 </p>
@@ -41,7 +41,7 @@ bun -g add @hellhub-collective/cli
 To use the HellHub CLI, you can simply type the `hellhub` keyword into your terminal. Let's look at a example command:
 
 ```bash
-hellhub statistics --limit 10 --filters="planet:name:@not:a"
+hellhub statistics --limit 10 --filters="planet:name:@contains:a"
 ```
 
 This command will output the statistics for the first 10 planets that do contain the letter "a" in their name:
@@ -62,4 +62,4 @@ export HELLHUB_API_URL="https://my-hellhub-api.com/api"
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](https://github.com/hellhub-collective/sdk/blob/main/LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/hellhub-collective/cli/blob/main/LICENSE) file for details.
