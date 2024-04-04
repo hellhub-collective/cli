@@ -3,7 +3,7 @@
   "license": "MIT",
   "private": false,
   "description": "The official CLI for HellHub API. Stay updated about the current war right without leaving your terminal.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "build/index.mjs",
   "types": "build/index.d.ts",
   "keywords": [
@@ -14,18 +14,16 @@
     "community"
   ],
   "files": [
-    "build"
+    "build",
+    "ascii"
   ],
   "bin": {
     "hellhub": "build/index.mjs"
   },
   "scripts": {
     "test": "bun test",
-    "clean": "rm -rf build",
     "prepublishOnly": "bun run build",
-    "copy": "bun run scripts/copy-assets.ts",
-    "build-script": "bun run scripts/build.ts",
-    "build": "bun run clean && bun run build-script && bun run copy",
+    "build": "bun run scripts/build.ts",
     "format": "prettier . --write",
     "lint": "eslint . --ext .ts"
   },
