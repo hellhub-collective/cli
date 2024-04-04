@@ -41,7 +41,7 @@ bun -g add @hellhub-collective/cli
 To use the HellHub CLI, you can simply type the `hellhub` keyword into your terminal. Let's look at a example command:
 
 ```bash
-hellhub statistics --limit 10 --filters="planet:name:@not:a"
+hellhub statistics --limit 10 --filters="planet:name:@contains:a"
 ```
 
 This command will output the statistics for the first 10 planets that do contain the letter "a" in their name:
