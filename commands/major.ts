@@ -6,14 +6,11 @@ import HellHub, { type Assignment } from "@hellhub-collective/sdk";
 
 import ascii from "utils/ascii";
 import request from "utils/request";
+import interval from "utils/interval";
 import { createListCommand, parseListOptions } from "utils/options";
 
 export default function major(program: Command) {
-  createListCommand(
-    program,
-    "major",
-    "show details for the current major order",
-  ).action(async (...args) => {
+  const handler = async (...args: any[]) => {
     const [id, query] = parseListOptions(...args);
 
     const { data, url } = await request<Assignment>(HellHub.assignments, id, {
@@ -80,5 +77,15 @@ export default function major(program: Command) {
       console.log(chalk.bold("\nRequest Source"));
       console.log(chalk.gray(`/${url.split("/").slice(3).join("/")}`));
     }
+  };
+
+  createListCommand(
+    program,
+    "major",
+    "show details for the current major order",
+  ).action(async (...args: any[]) => {
+    await handler(...args);
+    if (!args[1].watch) process.exit(0);
+    interval(async () => await handler(...args), args[1].watch);
   });
 }

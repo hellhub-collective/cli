@@ -5,14 +5,11 @@ import HellHub, { type Stratagem } from "@hellhub-collective/sdk";
 
 import ascii from "utils/ascii";
 import request from "utils/request";
+import interval from "utils/interval";
 import { createListCommand, parseListOptions } from "utils/options";
 
 export default function stratagems(program: Command) {
-  createListCommand(
-    program,
-    "stratagems",
-    "fetch a list of stratagems or get a stratagem by id",
-  ).action(async (...args) => {
+  const handler = async (...args: any[]) => {
     const [id, query] = parseListOptions<Stratagem>(...args);
 
     const { data, url } = await request<Stratagem>(HellHub.stratagems, id, {
@@ -86,5 +83,15 @@ export default function stratagems(program: Command) {
       console.log(chalk.bold("\nRequest Source"));
       console.log(chalk.gray(`/${url.split("/").slice(3).join("/")}`));
     }
+  };
+
+  createListCommand(
+    program,
+    "stratagems",
+    "fetch a list of stratagems or get a stratagem by id",
+  ).action(async (...args: any[]) => {
+    await handler(...args);
+    if (!args[1].watch) process.exit(0);
+    interval(async () => await handler(...args), args[1].watch);
   });
 }

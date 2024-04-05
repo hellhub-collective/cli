@@ -5,14 +5,11 @@ import HellHub, { type Sector } from "@hellhub-collective/sdk";
 
 import ascii from "utils/ascii";
 import request from "utils/request";
+import interval from "utils/interval";
 import { createListCommand, parseListOptions } from "utils/options";
 
 export default function sectors(program: Command) {
-  createListCommand(
-    program,
-    "sectors",
-    "fetch a list of sectors or get a sector by id",
-  ).action(async (...args) => {
+  const handler = async (...args: any[]) => {
     const [id, query] = parseListOptions<Sector>(...args);
 
     const { data, url } = await request<Sector>(HellHub.sectors, id, {
@@ -52,5 +49,15 @@ export default function sectors(program: Command) {
       console.log(chalk.bold("\nRequest Source"));
       console.log(chalk.gray(`/${url.split("/").slice(3).join("/")}`));
     }
+  };
+
+  createListCommand(
+    program,
+    "sectors",
+    "fetch a list of sectors or get a sector by id",
+  ).action(async (...args: any[]) => {
+    await handler(...args);
+    if (!args[1].watch) process.exit(0);
+    interval(async () => await handler(...args), args[1].watch);
   });
 }

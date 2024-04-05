@@ -6,6 +6,7 @@ import HellHub, { type Planet } from "@hellhub-collective/sdk";
 
 import ascii from "utils/ascii";
 import request from "utils/request";
+import interval from "utils/interval";
 import { createListCommand, parseListOptions } from "utils/options";
 
 const owner = (index: number) => {
@@ -22,11 +23,7 @@ const owner = (index: number) => {
 };
 
 export default function planets(program: Command) {
-  createListCommand(
-    program,
-    "planets",
-    "fetch a list of planets or get a planet by id",
-  ).action(async (...args) => {
+  const handler = async (...args: any[]) => {
     const [id, query] = parseListOptions<Planet>(...args);
 
     const { data, url } = await request<Planet>(HellHub.planets, id, query);
@@ -97,5 +94,15 @@ export default function planets(program: Command) {
       console.log(chalk.bold("\nRequest Source"));
       console.log(chalk.gray(`/${url.split("/").slice(3).join("/")}`));
     }
+  };
+
+  createListCommand(
+    program,
+    "planets",
+    "fetch a list of planets or get a planet by id",
+  ).action(async (...args: any[]) => {
+    await handler(...args);
+    if (!args[1].watch) process.exit(0);
+    interval(async () => await handler(...args), args[1].watch);
   });
 }

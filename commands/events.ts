@@ -5,6 +5,7 @@ import HellHub, { type GlobalEvent } from "@hellhub-collective/sdk";
 
 import ascii from "utils/ascii";
 import request from "utils/request";
+import interval from "utils/interval";
 import { createListCommand, parseListOptions } from "utils/options";
 
 const border = (message: string) => {
@@ -44,11 +45,7 @@ const description = (message: string) => {
 };
 
 export default function events(program: Command) {
-  createListCommand(
-    program,
-    "events",
-    "fetch a list of events or get a event by id",
-  ).action(async (...args) => {
+  const handler = async (...args: any[]) => {
     const [id, query] = parseListOptions<GlobalEvent>(...args);
 
     const { data, url } = await request<GlobalEvent>(HellHub.events, id, {
@@ -102,5 +99,15 @@ export default function events(program: Command) {
       console.log(chalk.bold("\nRequest Source"));
       console.log(chalk.gray(`/${url.split("/").slice(3).join("/")}`));
     }
+  };
+
+  createListCommand(
+    program,
+    "events",
+    "fetch a list of events or get a event by id",
+  ).action(async (...args: any[]) => {
+    await handler(...args);
+    if (!args[1].watch) process.exit(0);
+    interval(async () => await handler(...args), args[1].watch);
   });
 }
