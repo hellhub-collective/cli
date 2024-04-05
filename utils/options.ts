@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import type { QueryObject } from "@hellhub-collective/sdk";
+import type { Entity, QueryObject } from "@hellhub-collective/sdk";
 
 import type { ListOptions } from "types/list";
 
@@ -12,11 +12,17 @@ export function createListCommand(
     .command(command)
     .description(description)
     .argument("[id]", "the id of the entry to be fetched")
-    .option("-o, --order-by <string>", "the field to order by")
     .option("-u, --url [boolean]", "prints the request url")
+    .option("-o, --order-by <string>", "the field to order by")
     .option("-r, --raw [boolean]", "outputs the raw response body")
+    .option("-a, --no-ascii [boolean]", "disables the ascii art headers")
     .option("-s, --start <number>", "the number of entries to skip", parseInt)
     .option("-l, --limit <number>", "the number of entries to fetch", parseInt)
+    .option(
+      "-w, --watch [interval]",
+      "watch the data with a specified interval in seconds",
+      parseInt,
+    )
     .option("-d, --direction <string>", "the direction to sort by", val => {
       if (["asc", "desc"].includes(val)) return val;
       console.error("Invalid direction. Use 'asc' or 'desc'");
@@ -50,9 +56,9 @@ export function createListCommand(
     );
 }
 
-export function parseListOptions(
+export function parseListOptions<T extends Entity>(
   ...args: any[]
-): [string | undefined, QueryObject<any>] {
+): [string | undefined, QueryObject<T>] {
   const [id, options] = args as [string | undefined, ListOptions];
 
   if (!!id && isNaN(parseInt(id)) && id !== "galaxy") {

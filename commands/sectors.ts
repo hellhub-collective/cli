@@ -1,41 +1,20 @@
 import chalk from "chalk";
 import Table from "cli-table3";
 import type { Command } from "commander";
-
-import HellHub, {
-  type Sector,
-  type APIResponse,
-} from "@hellhub-collective/sdk";
+import HellHub, { type Sector } from "@hellhub-collective/sdk";
 
 import ascii from "utils/ascii";
-import { createListCommand, parseListOptions } from "utils/list-options";
+import request from "utils/request";
+import interval from "utils/interval";
+import { createListCommand, parseListOptions } from "utils/options";
 
 export default function sectors(program: Command) {
-  createListCommand(
-    program,
-    "sectors",
-    "fetch a list of sectors or get a sector by id",
-  ).action(async (...args) => {
-    const [id, query] = parseListOptions(...args);
+  const handler = async (...args: any[]) => {
+    const [id, query] = parseListOptions<Sector>(...args);
 
-    let response: APIResponse<Sector | Sector[]> | undefined;
-    if (!!id) {
-      response = await HellHub.sectors(id, { query });
-    } else {
-      response = await HellHub.sectors(query);
-    }
-
-    if (!response) {
-      console.error("An error occurred while fetching data.");
-      process.exit(1);
-    }
-
-    const { data, error } = await response.json();
-
-    if (!response.ok || !!error || !data) {
-      console.error(error?.details?.[0]);
-      process.exit(1);
-    }
+    const { data, url } = await request<Sector>(HellHub.sectors, id, {
+      ...query,
+    });
 
     if (!!args[1].raw) {
       console.log(data);
@@ -68,7 +47,17 @@ export default function sectors(program: Command) {
 
     if (!!args[1].url) {
       console.log(chalk.bold("\nRequest Source"));
-      console.log(chalk.gray(`/${response.url.split("/").slice(3).join("/")}`));
+      console.log(chalk.gray(`/${url.split("/").slice(3).join("/")}`));
     }
+  };
+
+  createListCommand(
+    program,
+    "sectors",
+    "fetch a list of sectors or get a sector by id",
+  ).action(async (...args: any[]) => {
+    await handler(...args);
+    if (!args[1].watch) process.exit(0);
+    interval(async () => await handler(...args), args[1].watch);
   });
 }

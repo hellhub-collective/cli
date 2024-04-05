@@ -5,6 +5,10 @@ export default async function ascii(
   name: string,
   replace: Record<string, string> = {},
 ) {
+  if (Bun.argv.includes("--no-ascii") || Bun.argv.includes("-a")) {
+    return;
+  }
+
   const file = await fs.readFile(
     path.join(process.cwd(), "./ascii", `${name}.txt`),
   );

@@ -1,14 +1,12 @@
 import chalk from "chalk";
 import boxen from "boxen";
 import type { Command } from "commander";
-
-import HellHub, {
-  type APIResponse,
-  type GlobalEvent,
-} from "@hellhub-collective/sdk";
+import HellHub, { type GlobalEvent } from "@hellhub-collective/sdk";
 
 import ascii from "utils/ascii";
-import { createListCommand, parseListOptions } from "utils/list-options";
+import request from "utils/request";
+import interval from "utils/interval";
+import { createListCommand, parseListOptions } from "utils/options";
 
 const border = (message: string) => {
   if (message.includes("MAJOR")) {
@@ -47,35 +45,13 @@ const description = (message: string) => {
 };
 
 export default function events(program: Command) {
-  createListCommand(
-    program,
-    "events",
-    "fetch a list of events or get a event by id",
-  ).action(async (...args) => {
-    const [id, query] = parseListOptions(...args);
+  const handler = async (...args: any[]) => {
+    const [id, query] = parseListOptions<GlobalEvent>(...args);
 
-    let response: APIResponse<GlobalEvent | GlobalEvent[]> | undefined;
-    if (!!id) {
-      response = await HellHub.events(id, { query });
-    } else {
-      response = await HellHub.events({
-        limit: 1,
-        sort: ["id:desc"],
-        ...query,
-      } as any);
-    }
-
-    if (!response) {
-      console.error("An error occurred while fetching data.");
-      process.exit(1);
-    }
-
-    const { data, error } = await response.json();
-
-    if (!response.ok || !!error || !data) {
-      console.error(error?.details?.[0]);
-      process.exit(1);
-    }
+    const { data, url } = await request<GlobalEvent>(HellHub.events, id, {
+      ...query,
+      ...(!id ? { limit: 1, sort: ["id:desc"] } : {}),
+    });
 
     if (!!args[1].raw) {
       console.log(data);
@@ -121,7 +97,17 @@ export default function events(program: Command) {
 
     if (!!args[1].url) {
       console.log(chalk.bold("\nRequest Source"));
-      console.log(chalk.gray(`/${response.url.split("/").slice(3).join("/")}`));
+      console.log(chalk.gray(`/${url.split("/").slice(3).join("/")}`));
     }
+  };
+
+  createListCommand(
+    program,
+    "events",
+    "fetch a list of events or get a event by id",
+  ).action(async (...args: any[]) => {
+    await handler(...args);
+    if (!args[1].watch) process.exit(0);
+    interval(async () => await handler(...args), args[1].watch);
   });
 }
