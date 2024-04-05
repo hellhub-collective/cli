@@ -6,7 +6,7 @@ import HellHub, { type Assignment } from "@hellhub-collective/sdk";
 
 import ascii from "utils/ascii";
 import request from "utils/request";
-import { createListCommand, parseListOptions } from "utils/list-options";
+import { createListCommand, parseListOptions } from "utils/options";
 
 export default function major(program: Command) {
   createListCommand(
