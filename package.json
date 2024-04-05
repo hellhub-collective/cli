@@ -55,7 +55,7 @@
     "email": "nettisfabio@gmail.com"
   },
   "dependencies": {
-    "@hellhub-collective/sdk": "^1.0.5",
+    "@hellhub-collective/sdk": "latest",
     "accounting": "^0.4.1",
     "boxen": "^7.1.1",
     "chalk": "^5.3.0",
