@@ -26,7 +26,13 @@ export default function planets(program: Command) {
   const handler = async (...args: any[]) => {
     const [id, query] = parseListOptions<Planet>(...args);
 
-    const { data, url } = await request<Planet>(HellHub.planets, id, query);
+    const { data, url } = await request<Planet>(HellHub.planets, id, {
+      ...query,
+      include: [
+        ...(Array.isArray(query.include) ? query.include : [] ?? []),
+        "sector",
+      ],
+    });
 
     if (!!args[1].raw) {
       console.log(data);
@@ -48,10 +54,13 @@ export default function planets(program: Command) {
       style: { head: ["white", "bold"] },
       head: [
         "ID",
-        "Name",
-        ...(!!entries?.[0]?.sector ? ["Sector"] : []),
         "Index",
+        "Name",
+        "Liberation",
+        "Rate",
+        "Prediction",
         "Players",
+        ...(!!entries?.[0]?.sector ? ["Sector"] : []),
         "Max Health",
         "Health",
         "HP",
@@ -72,12 +81,84 @@ export default function planets(program: Command) {
           return chalk.red(str);
         })();
 
+        const liberation = (() => {
+          const value = p.liberation;
+          const str = formatMoney(value, "%", 5, "'", ".", "%v%s");
+          return chalk.bold(str);
+        })();
+
+        const rate = (() => {
+          const value = p.liberationRate;
+          const str = `${p.liberationRate > 0 ? "+" : ""}${formatMoney(value, "%", 2, "'", ".", "%v%s")} / h`;
+          switch (p.liberationState) {
+            case "WINNING": {
+              return chalk.green(str);
+            }
+
+            case "DRAW": {
+              return chalk.yellow(str);
+            }
+
+            case "LOSING": {
+              return chalk.red(str);
+            }
+
+            default: {
+              return chalk.gray(str);
+            }
+          }
+        })();
+
+        const status = (() => {
+          switch (p.liberationState) {
+            case "WINNING": {
+              const now_h = p.health;
+              const max_h = p.maxHealth;
+              const now_p = (now_h / max_h) * 100;
+              const lib_r = p.liberationRate;
+
+              // show the time to liberation in minutes, hours and minutes or
+              // in days and hours if the time is greater than 24 hours
+              const lib_h = (100 - now_p) / lib_r;
+              const lib_m = lib_h * 60;
+              const lib_d = lib_h / 24;
+
+              if (lib_h < 1) {
+                return chalk.green(`${Math.round(lib_m)}m`);
+              } else if (lib_h < 24) {
+                return chalk.green(
+                  `${Math.round(lib_h)}h ${Math.round(lib_m % 60)}m`,
+                );
+              } else {
+                return chalk.green(
+                  `${Math.round(lib_d)}d ${Math.round(lib_h % 24)}h`,
+                );
+              }
+            }
+
+            case "DRAW": {
+              return chalk.yellow("Draw");
+            }
+
+            case "LOSING": {
+              return chalk.red("Losing");
+            }
+
+            default: {
+              return chalk.gray("N/A");
+            }
+          }
+        })();
+
         return [
           p.id,
-          p.name,
-          ...(p.sector ? [p.sector.name] : []),
           p.index,
+          p.name,
+          liberation,
+          rate,
+          status,
           formatMoney(p.players, "", 0, "'", "."),
+          ...(p.sector ? [p.sector.name] : []),
           formatMoney(p.maxHealth, "", 0, "'", "."),
           formatMoney(p.health, "", 0, "'", "."),
           hp,
