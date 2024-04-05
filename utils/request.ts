@@ -10,7 +10,7 @@ type RequestHandler<T extends Entity | Entity[]> = (
   options?: APIRequestInit<T>,
 ) => Promise<APIResponse<T>>;
 
-export async function request<T extends Entity>(
+export default async function request<T extends Entity>(
   handler: RequestHandler<T>,
   id?: string | number | undefined,
   query?: QueryObject<T> | undefined,
