@@ -2,9 +2,12 @@ import path from "path";
 import fs from "fs/promises";
 
 export default async function ascii(
+  args: any[],
   name: string,
   replace: Record<string, string> = {},
 ) {
+  if (!args[1].ascii) return;
+
   const file = await fs.readFile(
     path.join(process.cwd(), "./ascii", `${name}.txt`),
   );
