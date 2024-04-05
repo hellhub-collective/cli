@@ -18,6 +18,11 @@ export function createListCommand(
     .option("-a, --no-ascii [boolean]", "disables the ascii art headers")
     .option("-s, --start <number>", "the number of entries to skip", parseInt)
     .option("-l, --limit <number>", "the number of entries to fetch", parseInt)
+    .option(
+      "-w, --watch [interval]",
+      "watch the data with a specified interval in seconds",
+      parseInt,
+    )
     .option("-d, --direction <string>", "the direction to sort by", val => {
       if (["asc", "desc"].includes(val)) return val;
       console.error("Invalid direction. Use 'asc' or 'desc'");
