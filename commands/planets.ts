@@ -2,13 +2,10 @@ import chalk from "chalk";
 import Table from "cli-table3";
 import type { Command } from "commander";
 import { formatMoney } from "accounting";
-
-import HellHub, {
-  type APIResponse,
-  type Planet,
-} from "@hellhub-collective/sdk";
+import HellHub, { type Planet } from "@hellhub-collective/sdk";
 
 import ascii from "utils/ascii";
+import request from "utils/request";
 import { createListCommand, parseListOptions } from "utils/list-options";
 
 const owner = (index: number) => {
@@ -30,26 +27,9 @@ export default function planets(program: Command) {
     "planets",
     "fetch a list of planets or get a planet by id",
   ).action(async (...args) => {
-    const [id, query] = parseListOptions(...args);
+    const [id, query] = parseListOptions<Planet>(...args);
 
-    let response: APIResponse<Planet | Planet[]> | undefined;
-    if (!!id) {
-      response = await HellHub.planets(id, { query });
-    } else {
-      response = await HellHub.planets(query);
-    }
-
-    if (!response) {
-      console.error("An error occurred while fetching data.");
-      process.exit(1);
-    }
-
-    const { data, error } = await response.json();
-
-    if (!response.ok || !!error || !data) {
-      console.error(error?.details?.[0]);
-      process.exit(1);
-    }
+    const { data, url } = await request<Planet>(HellHub.planets, id, query);
 
     if (!!args[1].raw) {
       console.log(data);
@@ -115,7 +95,7 @@ export default function planets(program: Command) {
 
     if (!!args[1].url) {
       console.log(chalk.bold("\nRequest Source"));
-      console.log(chalk.gray(`/${response.url.split("/").slice(3).join("/")}`));
+      console.log(chalk.gray(`/${url.split("/").slice(3).join("/")}`));
     }
   });
 }

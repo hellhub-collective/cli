@@ -1,13 +1,10 @@
 import chalk from "chalk";
 import boxen from "boxen";
 import type { Command } from "commander";
-
-import HellHub, {
-  type APIResponse,
-  type Report,
-} from "@hellhub-collective/sdk";
+import HellHub, { type Report } from "@hellhub-collective/sdk";
 
 import ascii from "utils/ascii";
+import request from "utils/request";
 import { createListCommand, parseListOptions } from "utils/list-options";
 
 const border = (message: string) => {
@@ -52,30 +49,12 @@ export default function reports(program: Command) {
     "reports",
     "fetch a list of reports or get a report by id",
   ).action(async (...args) => {
-    const [id, query] = parseListOptions(...args);
+    const [id, query] = parseListOptions<Report>(...args);
 
-    let response: APIResponse<Report | Report[]> | undefined;
-    if (!!id) {
-      response = await HellHub.reports(id, { query });
-    } else {
-      response = await HellHub.reports({
-        limit: 1,
-        sort: ["id:desc"],
-        ...query,
-      } as any);
-    }
-
-    if (!response) {
-      console.error("An error occurred while fetching data.");
-      process.exit(1);
-    }
-
-    const { data, error } = await response.json();
-
-    if (!response.ok || !!error || !data) {
-      console.error(error?.details?.[0]);
-      process.exit(1);
-    }
+    const { data, url } = await request<Report>(HellHub.reports, id, {
+      ...(!id ? { limit: 1, sort: ["id:desc"] } : {}),
+      ...query,
+    });
 
     if (!!args[1].raw) {
       console.log(data);
@@ -121,7 +100,7 @@ export default function reports(program: Command) {
 
     if (!!args[1].url) {
       console.log(chalk.bold("\nRequest Source"));
-      console.log(chalk.gray(`/${response.url.split("/").slice(3).join("/")}`));
+      console.log(chalk.gray(`/${url.split("/").slice(3).join("/")}`));
     }
   });
 }

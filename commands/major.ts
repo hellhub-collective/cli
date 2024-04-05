@@ -2,13 +2,10 @@ import chalk from "chalk";
 import boxen from "boxen";
 import { formatMoney } from "accounting";
 import type { Command } from "commander";
-
-import HellHub, {
-  type APIResponse,
-  type Assignment,
-} from "@hellhub-collective/sdk";
+import HellHub, { type Assignment } from "@hellhub-collective/sdk";
 
 import ascii from "utils/ascii";
+import request from "utils/request";
 import { createListCommand, parseListOptions } from "utils/list-options";
 
 export default function major(program: Command) {
@@ -19,40 +16,14 @@ export default function major(program: Command) {
   ).action(async (...args) => {
     const [id, query] = parseListOptions(...args);
 
-    let response: APIResponse<Assignment | Assignment[]> | undefined;
-    if (!!id) {
-      response = await HellHub.assignments(id, {
-        query: {
-          ...query,
-          include: [
-            ...(Array.isArray(query.include) ? query.include : [] ?? []),
-            "reward",
-          ],
-        } as any,
-      });
-    } else {
-      response = await HellHub.assignments({
-        limit: 1,
-        sort: ["id:desc"],
-        ...query,
-        include: [
-          ...(Array.isArray(query.include) ? query.include : [] ?? []),
-          "reward",
-        ],
-      } as any);
-    }
-
-    if (!response) {
-      console.error("An error occurred while fetching data.");
-      process.exit(1);
-    }
-
-    const { data, error } = await response.json();
-
-    if (!response.ok || !!error || !data) {
-      console.error(error?.details?.[0]);
-      process.exit(1);
-    }
+    const { data, url } = await request<Assignment>(HellHub.assignments, id, {
+      ...(!id ? { limit: 1, sort: ["id:desc"] } : {}),
+      ...query,
+      include: [
+        ...(Array.isArray(query.include) ? query.include : [] ?? []),
+        "reward",
+      ],
+    });
 
     if (!!args[1].raw) {
       console.log(data);
@@ -107,7 +78,7 @@ export default function major(program: Command) {
 
     if (!!args[1].url) {
       console.log(chalk.bold("\nRequest Source"));
-      console.log(chalk.gray(`/${response.url.split("/").slice(3).join("/")}`));
+      console.log(chalk.gray(`/${url.split("/").slice(3).join("/")}`));
     }
   });
 }

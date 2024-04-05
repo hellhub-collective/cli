@@ -1,11 +1,12 @@
 import chalk from "chalk";
 import Table from "cli-table3";
+import { formatMoney } from "accounting";
 import type { Command } from "commander";
+import HellHub, { type Stat } from "@hellhub-collective/sdk";
 
 import ascii from "utils/ascii";
+import request from "utils/request";
 import { createListCommand, parseListOptions } from "utils/list-options";
-import HellHub, { type Stat, type APIResponse } from "@hellhub-collective/sdk";
-import { formatMoney } from "accounting";
 
 export default function statistics(program: Command) {
   createListCommand(
@@ -13,29 +14,12 @@ export default function statistics(program: Command) {
     "statistics",
     "fetch a list of statistics or get a statistic by id",
   ).action(async (...args) => {
-    const [id, query] = parseListOptions(...args);
+    const [id, query] = parseListOptions<Stat>(...args);
 
-    let response: APIResponse<Stat | Stat[]> | undefined;
-    if (!!id) {
-      response = await HellHub.statistics(id, { query });
-    } else {
-      response = await HellHub.statistics({
-        ...query,
-        include: ["planet"],
-      } as any);
-    }
-
-    if (!response) {
-      console.error("An error occurred while fetching data.");
-      process.exit(1);
-    }
-
-    const { data, error } = await response.json();
-
-    if (!response.ok || !!error || !data) {
-      console.error(error?.details?.[0]);
-      process.exit(1);
-    }
+    const { data, url } = await request<Stat>(HellHub.statistics, id, {
+      ...query,
+      ...(!id ? { include: ["planet"] } : {}),
+    });
 
     if (!!args[1].raw) {
       console.log(data);
@@ -72,9 +56,8 @@ export default function statistics(program: Command) {
       ],
     });
 
-    const items: (string | number)[][] = [];
     for (const p of entries) {
-      items.push(
+      table.push(
         [
           p.planet?.name ?? "Entire Galaxy",
           formatMoney(p.deaths, "", 0, "'", "."),
@@ -92,13 +75,11 @@ export default function statistics(program: Command) {
       );
     }
 
-    table.push(...items);
-
     console.log(table.toString());
 
     if (!!args[1].url) {
       console.log(chalk.bold("\nRequest Source"));
-      console.log(chalk.gray(`/${response.url.split("/").slice(3).join("/")}`));
+      console.log(chalk.gray(`/${url.split("/").slice(3).join("/")}`));
     }
   });
 }
