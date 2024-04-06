@@ -10,7 +10,7 @@ export default async function ascii(
   }
 
   const file = await fs.readFile(
-    path.join(process.cwd(), "./ascii", `${name}.txt`),
+    path.join(__dirname, "../ascii", `${name}.txt`),
   );
 
   let _ascii = file.toString();
