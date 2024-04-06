@@ -1,8 +1,6 @@
 import path from "path";
 import fs from "fs/promises";
 
-const INSTALL_DIR = get_install_dir();
-
 export default async function ascii(
   name: string,
   replace: Record<string, string> = {},
