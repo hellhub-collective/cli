@@ -1,12 +1,6 @@
 import path from "path";
 import fs from "fs/promises";
 
-function get_install_dir() {
-  // the script being run is always ./build/index.mjs ?
-  let script = process.argv[1];
-  return path.resolve(script, './../../');
-}
-
 const INSTALL_DIR = get_install_dir();
 
 export default async function ascii(
@@ -18,7 +12,7 @@ export default async function ascii(
   }
 
   const file = await fs.readFile(
-    path.join(INSTALL_DIR, "./ascii", `${name}.txt`),
+    path.join(__dirname, "../ascii", `${name}.txt`),
   );
 
   let _ascii = file.toString();
