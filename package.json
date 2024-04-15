@@ -3,7 +3,7 @@
   "license": "MIT",
   "private": false,
   "description": "The official CLI for HellHub API. Stay updated about the current war right without leaving your terminal.",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "main": "build/index.mjs",
   "types": "build/index.d.ts",
   "keywords": [
