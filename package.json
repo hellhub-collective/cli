@@ -2,8 +2,8 @@
   "name": "@hellhub-collective/cli",
   "license": "MIT",
   "private": false,
-  "description": "The official CLI for HellHub API. Stay updated about the current war right without leaving your terminal.",
-  "version": "1.2.4",
+  "description": "A CLI for Helldivers 2: View the war progress without leaving your terminal! Powered by the HellHub API.",
+  "version": "1.2.5",
   "main": "build/index.mjs",
   "types": "build/index.d.ts",
   "keywords": [
@@ -44,10 +44,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hellhub-collective/sdk.git"
+    "url": "https://github.com/hellhub-collective/cli.git"
   },
   "bugs": {
-    "url": "https://github.com/hellhub-collective/sdk/issues"
+    "url": "https://github.com/hellhub-collective/cli/issues"
   },
   "author": {
     "name": "Fabio Nettis",
