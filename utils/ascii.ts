@@ -1,5 +1,5 @@
-import path from "path";
-import fs from "fs/promises";
+const TEXT_URL =
+  "https://vxspqnuarwhjjbxzgauv.supabase.co/storage/v1/object/public/ascii";
 
 export default async function ascii(
   name: string,
@@ -9,14 +9,17 @@ export default async function ascii(
     return;
   }
 
-  const file = await fs.readFile(
-    path.join(__dirname, "../ascii", `${name}.txt`),
-  );
+  try {
+    const response = await fetch(`${TEXT_URL}/${name}.txt`);
+    if (!response.ok) return;
 
-  let _ascii = file.toString();
-  for (const [key, value] of Object.entries(replace)) {
-    _ascii = _ascii.replace(`[${key.toUpperCase()}]`, value);
+    let _ascii = await response.text();
+    for (const [key, value] of Object.entries(replace)) {
+      _ascii = _ascii.replace(`[${key.toUpperCase()}]`, value);
+    }
+
+    console.log(`\n${_ascii}\n`);
+  } catch {
+    return;
   }
-
-  console.log(`\n${_ascii}\n`);
 }
