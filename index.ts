@@ -16,7 +16,7 @@ const program = new Command();
 const programVersion = version;
 const programDescription = description;
 const programName = Object.keys(bin)[0];
-const helpText = `\nCheck out the our free and community driven API at ${repository.url.replace(".git", "")}`;
+const helpText = `\nCheck out the our free and community driven API at ${repository.url.replace("/cli.git", "/api")}`;
 
 program
   .name(programName)
