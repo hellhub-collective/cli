@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from "commander";
-import { bin, description, version } from "package.json";
+import { bin, description, version, repository } from "package.json";
 
 import major from "commands/major";
 import events from "commands/events";
@@ -16,11 +16,13 @@ const program = new Command();
 const programVersion = version;
 const programDescription = description;
 const programName = Object.keys(bin)[0];
+const helpText = `\nCheck out the our free and community driven API at ${repository.url.replace(".git", "")}`;
 
 program
   .name(programName)
   .version(programVersion)
-  .description(programDescription);
+  .description(programDescription)
+  .addHelpText("after", helpText);
 
 [planets, sectors, stratagems, reports, events, major, statistics].forEach(
   com => com(program),
