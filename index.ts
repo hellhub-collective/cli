@@ -1,5 +1,3 @@
-#! /usr/bin/env bun
-
 import { Command } from "commander";
 import { bin, description, version } from "package.json";
 
