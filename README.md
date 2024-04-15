@@ -16,11 +16,8 @@
   <a href="https://github.com/hellhub-collective/cli/actions/workflows/test.yml">
     <img src="https://github.com/hellhub-collective/cli/actions/workflows/test.yml/badge.svg" alt="Tests" />
   </a>
-  <a href="https://bundlephobia.com/package/@hellhub-collective/cli">
-    <img src="https://img.shields.io/bundlephobia/min/@hellhub-collective/cli" alt="Bundle Size (Minified)" />
-  </a>
-  <a href="https://bundlephobia.com/package/@hellhub-collective/cli">
-    <img src="https://img.shields.io/bundlephobia/minzip/@hellhub-collective/cli" alt="Bundle Size (Minified & Zipped)" />
+  <a href="https://bundlejs.com/?q=%40hellhub-collective%2Fcli%40latest&treeshake=%5B*%5D">
+    <img src="https://deno.bundlejs.com/badge?q=@hellhub-collective/cli@latest&treeshake=[*]&config={%2Acompression%2A:%2Agzip%2A,%2Aesbuild%2A:{%2Aplatform%2A:%2Anode%2A}}" alt="Bundle Size (Minified & Zipped)" />
   </a>
 </p>
 
