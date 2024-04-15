@@ -14,8 +14,7 @@
     "community"
   ],
   "files": [
-    "build",
-    "ascii"
+    "build"
   ],
   "bin": {
     "hellhub": "build/index.mjs"
