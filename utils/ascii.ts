@@ -5,7 +5,7 @@ export default async function ascii(
   name: string,
   replace: Record<string, string> = {},
 ) {
-  if (Bun.argv.includes("--no-ascii") || Bun.argv.includes("-a")) {
+  if (process.argv.includes("--no-ascii") || process.argv.includes("-a")) {
     return;
   }
 

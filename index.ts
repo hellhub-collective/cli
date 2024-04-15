@@ -26,4 +26,4 @@ program
   com => com(program),
 );
 
-program.parse(Bun.argv);
+program.parse(process.argv);
