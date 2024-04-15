@@ -3,7 +3,7 @@
   "license": "MIT",
   "private": false,
   "description": "A CLI for Helldivers 2: View the war progress without leaving your terminal! Powered by the HellHub API.",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "main": "build/index.mjs",
   "types": "build/index.d.ts",
   "keywords": [
