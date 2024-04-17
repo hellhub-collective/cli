@@ -5,6 +5,7 @@ import type { Command } from "commander";
 import HellHub, { type Assignment } from "@hellhub-collective/sdk";
 
 import ascii from "utils/ascii";
+import output from "utils/output";
 import request from "utils/request";
 import interval from "utils/interval";
 import { createListCommand, parseListOptions } from "utils/options";
@@ -23,7 +24,7 @@ export default function major(program: Command) {
     });
 
     if (!!args[1].raw) {
-      console.log(data);
+      output(data, !!args[1].pretty);
       process.exit(0);
     }
 
