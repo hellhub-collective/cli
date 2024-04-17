@@ -14,8 +14,9 @@ export function createListCommand(
     .argument("[id]", "the id of the entry to be fetched")
     .option("-u, --url [boolean]", "prints the request url")
     .option("-o, --order-by <string>", "the field to order by")
-    .option("-r, --raw [boolean]", "outputs the raw response body")
     .option("-a, --no-ascii [boolean]", "disables the ascii art headers")
+    .option("-r, --raw [boolean]", "outputs the raw response data as json")
+    .option("-p, --pretty [boolean]", "use with --raw to pretty print the json")
     .option("-s, --start <number>", "the number of entries to skip", parseInt)
     .option("-l, --limit <number>", "the number of entries to fetch", parseInt)
     .option(
