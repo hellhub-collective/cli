@@ -5,6 +5,7 @@ import { bin, description, version, repository } from "package.json";
 
 import major from "commands/major";
 import events from "commands/events";
+import source from "commands/source";
 import planets from "commands/planets";
 import sectors from "commands/sectors";
 import reports from "commands/reports";
@@ -24,8 +25,15 @@ program
   .description(programDescription)
   .addHelpText("after", helpText);
 
-[planets, sectors, stratagems, reports, events, major, statistics].forEach(
-  com => com(program),
-);
+[
+  planets,
+  sectors,
+  stratagems,
+  reports,
+  events,
+  major,
+  statistics,
+  source,
+].forEach(com => com(program));
 
 program.parse(process.argv);
